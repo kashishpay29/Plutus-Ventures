@@ -2,114 +2,137 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+@import url('https://fonts.googleapis.com/css2?family=Chivo:wght@400;700;900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+
+:root {
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary: 222 70% 10%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+    --radius: 0.5rem;
+
+    --navy: #0A1128;
+    --signal: #2563EB;
+    --cyan: #06B6D4;
+}
+
+* {
+    border-color: hsl(var(--border));
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
     margin: 0;
-    font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-        sans-serif;
+    padding: 0;
+    background: #ffffff;
+    color: #0A1128;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+h1, h2, h3, h4 {
+    font-family: 'Chivo', system-ui, sans-serif;
+    letter-spacing: -0.01em;
 }
 
-@layer base {
-    :root {
-        --background: 0 0% 100%;
-        --foreground: 0 0% 3.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 0 0% 3.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 0 0% 3.9%;
-        --primary: 0 0% 9%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 0 0% 96.1%;
-        --secondary-foreground: 0 0% 9%;
-        --muted: 0 0% 96.1%;
-        --muted-foreground: 0 0% 45.1%;
-        --accent: 0 0% 96.1%;
-        --accent-foreground: 0 0% 9%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 89.8%;
-        --input: 0 0% 89.8%;
-        --ring: 0 0% 3.9%;
-        --chart-1: 12 76% 61%;
-        --chart-2: 173 58% 39%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-        --radius: 0.5rem;
-    }
-    .dark {
-        --background: 0 0% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 0 0% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 0 0% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
-        --primary-foreground: 0 0% 9%;
-        --secondary: 0 0% 14.9%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 0 0% 14.9%;
-        --muted-foreground: 0 0% 63.9%;
-        --accent: 0 0% 14.9%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 14.9%;
-        --input: 0 0% 14.9%;
-        --ring: 0 0% 83.1%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
-    }
+.font-mono, code {
+    font-family: 'IBM Plex Mono', monospace;
 }
 
-@layer base {
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
-    }
+.font-display {
+    font-family: 'Chivo', sans-serif;
 }
 
-@layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
+/* Custom scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
-    }
+/* Leaflet adjustments – grayscale tile look from CartoDB */
+.leaflet-container { font-family: 'IBM Plex Sans', sans-serif; }
+
+/* Status colors */
+.status-open { background: #DBEAFE; color: #1E40AF; }
+.status-assigned { background: #EDE9FE; color: #5B21B6; }
+.status-accepted { background: #FEF3C7; color: #92400E; }
+.status-travelling { background: #CFFAFE; color: #155E75; }
+.status-reached_site { background: #D1FAE5; color: #065F46; }
+.status-in_progress { background: #FFEDD5; color: #9A3412; }
+.status-resolved { background: #CCFBF1; color: #115E59; }
+.status-completed { background: #DCFCE7; color: #14532D; }
+.status-rejected { background: #FEE2E2; color: #991B1B; }
+
+.border-status-open { border-color: #3B82F6; }
+.border-status-assigned { border-color: #8B5CF6; }
+.border-status-accepted { border-color: #F59E0B; }
+.border-status-travelling { border-color: #06B6D4; }
+.border-status-reached_site { border-color: #10B981; }
+.border-status-in_progress { border-color: #F97316; }
+.border-status-resolved { border-color: #14B8A6; }
+.border-status-completed { border-color: #16A34A; }
+.border-status-rejected { border-color: #EF4444; }
+
+@keyframes ping-soft {
+    75%, 100% { transform: scale(2); opacity: 0; }
 }
+.pulse-dot {
+    position: relative;
+    display: inline-flex;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #10B981;
+}
+.pulse-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: #10B981;
+    animation: ping-soft 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.bg-navy { background-color: var(--navy); }
+.text-navy { color: var(--navy); }
+.bg-signal { background-color: var(--signal); }
+.text-signal { color: var(--signal); }
+.border-navy { border-color: var(--navy); }
+
+/* Hover lift micro-interaction */
+.hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.hover-lift:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,17,40,0.08); }
+
+/* Mobile safe area */
+.pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0.75rem); }
+
+/* Login background overlay */
+.login-bg {
+    background:
+      linear-gradient(135deg, rgba(10,17,40,0.92), rgba(10,17,40,0.72)),
+      url('https://images.unsplash.com/photo-1768697581060-52e2edbee7fa?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBjb3Jwb3JhdGUlMjBvZmZpY2UlMjBidWlsZGluZyUyMHNreWxpbmV8ZW58MHx8fHwxNzc4NTU5MjY1fDA&ixlib=rb-4.1.0&q=85') center/cover;
+}
+
+/* Kanban scroll snap on mobile */
+.kanban-scroll { scroll-snap-type: x mandatory; }
+.kanban-col { scroll-snap-align: start; }
+
+/* Signature canvas */
+.sig-canvas { background: #FFFFFF; touch-action: none; }
