@@ -70,13 +70,13 @@ export default function EngineerAttendance() {
           <div className="p-3 rounded bg-slate-50 text-center">
             <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Check In</div>
             <div className="font-mono font-bold text-navy mt-1">
-              {today?.check_in ? formatDate(today.check_in).split(",")[1] : "—"}
+              {today?.check_in ? new Date(today.check_in).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) : "—"}
             </div>
           </div>
           <div className="p-3 rounded bg-slate-50 text-center">
             <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Check Out</div>
             <div className="font-mono font-bold text-navy mt-1">
-              {today?.check_out ? formatDate(today.check_out).split(",")[1] : "—"}
+              {today?.check_out ? new Date(today.check_out).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) : "—"}
             </div>
           </div>
         </div>
