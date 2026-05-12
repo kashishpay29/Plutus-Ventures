@@ -1,0 +1,137 @@
+{
+  "theme": "LIGHT",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "brand": {
+    "name": "ServiceOps",
+    "tone": "Professional, Authoritative, High-Tech, Efficient",
+    "emotion": "Clarity and Control"
+  },
+  "typography": {
+    "headings": {
+      "fontFamily": "Chivo",
+      "importCommand": "Import from Google Fonts (Chivo)",
+      "weights": ["400", "700", "900"],
+      "usage": "Use tight letter spacing (tracking-tight) for all H1/H2."
+    },
+    "body": {
+      "fontFamily": "IBM Plex Sans",
+      "importCommand": "Import from Google Fonts (IBM Plex Sans)",
+      "weights": ["400", "500", "600"],
+      "usage": "Use for all data tables, inputs, and forms. Highly legible."
+    },
+    "mono": {
+      "fontFamily": "IBM Plex Mono",
+      "usage": "For Device IDs (DEV-YYYY-XXXX), ticket numbers, and timestamps."
+    },
+    "hierarchy": {
+      "h1": "text-4xl sm:text-5xl font-black tracking-tight",
+      "h2": "text-2xl sm:text-3xl font-bold tracking-tight",
+      "h3": "text-xl sm:text-2xl font-bold",
+      "h4": "text-lg sm:text-xl font-semibold",
+      "body": "text-base",
+      "small": "text-sm",
+      "overline": "text-xs font-bold uppercase tracking-[0.2em]"
+    }
+  },
+  "colors": {
+    "primary": {
+      "DEFAULT": "#0A1128",
+      "description": "Deep Navy Blue. Used for Sidebars, Header, and primary solid buttons."
+    },
+    "secondary": {
+      "DEFAULT": "#2563EB",
+      "description": "Signal Blue. Used for active states, CTA borders, and links."
+    },
+    "accent": {
+      "DEFAULT": "#06B6D4",
+      "description": "Cyan. Used sparingly for status pulse animations or real-time indicators."
+    },
+    "background": {
+      "DEFAULT": "#FFFFFF",
+      "subtle": "#F8FAFC",
+      "description": "Pure white for main canvas to maintain high contrast. Slate-50 for off-white sections."
+    },
+    "text": {
+      "primary": "#0A1128",
+      "secondary": "#475569",
+      "muted": "#94A3B8"
+    },
+    "border": "#E2E8F0",
+    "status": {
+      "open": "#3B82F6",
+      "assigned": "#8B5CF6",
+      "accepted": "#F59E0B",
+      "travelling": "#06B6D4",
+      "reached": "#10B981",
+      "in_progress": "#F97316",
+      "resolved": "#14B8A6",
+      "completed": "#16A34A"
+    }
+  },
+  "spacing": {
+    "generous": true,
+    "dashboard_padding": "p-6 sm:p-8",
+    "card_padding": "p-6",
+    "gap_tight": "gap-4",
+    "gap_wide": "gap-8"
+  },
+  "surfaces": {
+    "dashboard_cards": "bg-white border border-slate-200 rounded-none sm:rounded-md shadow-sm hover:shadow-md transition-shadow",
+    "header_glass": "backdrop-blur-xl bg-white/80 border-b border-slate-200 sticky top-0 z-50",
+    "sidebar": "bg-[#0A1128] text-white border-r border-[#1E293B]",
+    "mobile_bottom_nav": "bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 fixed bottom-0 left-0 right-0 pb-safe"
+  },
+  "layout_modes": {
+    "dashboard": "Mode B: The 'Control Room' Grid (grid-cols-1 md:grid-cols-3 lg:grid-cols-4) with tight gaps (gap-4 or gap-6). Override stretch with align-self where needed.",
+    "kanban": "Horizontal flex with overflow-x-auto, fixed column widths (w-80), snap-x snap-mandatory on mobile.",
+    "mobile_pwa": "Mobile-first, single column. Oversized tap targets (min-h-[48px]). Bottom sheet (Drawer) for actions instead of Modals."
+  },
+  "components": {
+    "button": "Rounded-md (NOT fully pill). Heavy font weight. Hover state MUST explicitly set text color and background.",
+    "table": "Shadcn Table. Zebra striping or clear bottom borders. Monospace for IDs.",
+    "charts": "Shadcn/Recharts. Use sharp lines, remove excessive grid lines. Use status colors for data.",
+    "map": "Leaflet with a minimalist/grayscale map tile (e.g., CartoDB Positron) so the colorful engineer markers pop out.",
+    "kanban_card": "Left border thickened (border-l-4) with status color. Compact metadata."
+  },
+  "motion": {
+    "page_transition": "Framer Motion layout animations for Kanban cards moving columns.",
+    "micro": "Hover lift (-translate-y-0.5) on cards. Status indicators should have a ping animation (absolute w-full h-full animate-ping opacity-75)."
+  },
+  "media": {
+    "image_urls": [
+      {
+        "url": "https://images.unsplash.com/photo-1768697581060-52e2edbee7fa?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBjb3Jwb3JhdGUlMjBvZmZpY2UlMjBidWlsZGluZyUyMHNreWxpbmV8ZW58MHx8fHwxNzc4NTU5MjY1fDA&ixlib=rb-4.1.0&q=85",
+        "category": "auth_background",
+        "description": "Modern corporate skyline for the login screen background (apply dark blue overlay bg-[#0A1128]/80)."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1599548199555-7994a155bf54?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHwzfHxwcm9mZXNzaW9uYWwlMjBJVCUyMGVuZ2luZWVyJTIwdGVjaG5pY2lhbiUyMHByb2ZpbGV8ZW58MHx8fHwxNzc4NTU5MjY1fDA&ixlib=rb-4.1.0&q=85",
+        "category": "engineer_avatar_1",
+        "description": "Avatar placeholder for Engineer profile."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1629836149344-3c51a772fe35?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBJVCUyMGVuZ2luZWVyJTIwdGVjaG5pY2lhbiUyMHByb2ZpbGV8ZW58MHx8fHwxNzc4NTU5MjY1fDA&ixlib=rb-4.1.0&q=85",
+        "category": "engineer_avatar_2",
+        "description": "Avatar placeholder for Engineer profile."
+      }
+    ]
+  },
+  "icons": {
+    "library": "lucide-react",
+    "instructions": "Use Lucide React (already installed). Use solid strokes, standard sizes."
+  },
+  "testing": {
+    "required_attributes": ["data-testid"],
+    "convention": "kebab-case, role-based (e.g., data-testid='ticket-kanban-board', data-testid='engineer-location-map')"
+  },
+  "instructions_to_main_agent": [
+    "Treat Admin Panel and Mobile PWA as distinct viewports but sharing this exact theme token set. DO NOT build mobile PWA just as shrunk admin panel. Mobile PWA needs a bottom app bar navigation and full-screen swipeable drawers for actions.",
+    "For the Admin panel, use a persistent sidebar (dark navy #0A1128) and white main canvas.",
+    "For the Mobile PWA, use a bottom navigation bar, hide complex data in Drawers, and prioritize camera/location/signature inputs. Add 'pb-24' to scroll containers to prevent bottom nav overlap.",
+    "Map implementation (Leaflet): Use a light grayscale tile layer (CartoDB Positron) so the engineer markers stand out clearly.",
+    "Kanban board MUST use Framer Motion for smooth drag/drop or column transitions.",
+    "Use react-signature-canvas for digital signatures on the mobile PWA and jspdf/react-pdf for service report generation.",
+    "Always apply data-testid to critical elements for testing.",
+    "Use Sonner for toast notifications to simulate real-time push events."
+  ]
+}
