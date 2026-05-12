@@ -1,78 +1,53 @@
 """
-Emergent Object Storage client. Init once at startup, reuse storage_key.
+Local filesystem object storage.
+Stores files under STORAGE_PATH/{path} where path is e.g. "reports/<ticket>-<uuid>.pdf".
+Replaces the previous cloud-storage integration so deployment to any host
+(Render / Railway / AWS / Vercel) only needs a mountable volume.
 """
 import os
 import logging
-import requests
-
-STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
-APP_NAME = os.environ.get("APP_NAME", "serviceops")
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
-_storage_key = None
+
+STORAGE_ROOT = Path(os.environ.get("STORAGE_PATH", "/app/backend/storage"))
 
 
 def init_storage():
-    global _storage_key
-    if _storage_key:
-        return _storage_key
-    key = os.environ.get("EMERGENT_LLM_KEY")
-    if not key:
-        logger.warning("EMERGENT_LLM_KEY not set; storage disabled")
-        return None
-    try:
-        resp = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": key}, timeout=30)
-        resp.raise_for_status()
-        _storage_key = resp.json()["storage_key"]
-        logger.info("Object storage initialized")
-        return _storage_key
-    except Exception as e:
-        logger.error(f"Storage init failed: {e}")
-        return None
+    STORAGE_ROOT.mkdir(parents=True, exist_ok=True)
+    return True
 
 
-def put_object(path: str, data: bytes, content_type: str) -> dict:
-    key = init_storage()
-    if not key:
-        raise RuntimeError("Storage not initialized")
-    resp = requests.put(
-        f"{STORAGE_URL}/objects/{path}",
-        headers={"X-Storage-Key": key, "Content-Type": content_type},
-        data=data,
-        timeout=120,
-    )
-    if resp.status_code == 403:
-        # Refresh key once
-        global _storage_key
-        _storage_key = None
-        key = init_storage()
-        resp = requests.put(
-            f"{STORAGE_URL}/objects/{path}",
-            headers={"X-Storage-Key": key, "Content-Type": content_type},
-            data=data,
-            timeout=120,
-        )
-    resp.raise_for_status()
-    return resp.json()
+def _resolve(path: str) -> Path:
+    """Resolve a storage path safely under STORAGE_ROOT."""
+    # Strip leading slashes
+    safe = path.lstrip("/")
+    full = (STORAGE_ROOT / safe).resolve()
+    if not str(full).startswith(str(STORAGE_ROOT.resolve())):
+        raise ValueError(f"Path escapes storage root: {path}")
+    return full
+
+
+def put_object(path: str, data: bytes, content_type: str = "application/octet-stream") -> dict:
+    full = _resolve(path)
+    full.parent.mkdir(parents=True, exist_ok=True)
+    full.write_bytes(data)
+    return {"path": path, "size": len(data), "content_type": content_type}
 
 
 def get_object(path: str):
-    key = init_storage()
-    if not key:
-        raise RuntimeError("Storage not initialized")
-    resp = requests.get(
-        f"{STORAGE_URL}/objects/{path}",
-        headers={"X-Storage-Key": key},
-        timeout=60,
-    )
-    if resp.status_code == 403:
-        global _storage_key
-        _storage_key = None
-        key = init_storage()
-        resp = requests.get(
-            f"{STORAGE_URL}/objects/{path}",
-            headers={"X-Storage-Key": key},
-            timeout=60,
-        )
-    resp.raise_for_status()
-    return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
+    full = _resolve(path)
+    if not full.exists():
+        raise FileNotFoundError(path)
+    return full.read_bytes(), None
+
+
+def delete_object(path: str) -> bool:
+    try:
+        full = _resolve(path)
+        if full.exists():
+            full.unlink()
+        return True
+    except Exception as e:
+        logger.error(f"Delete failed for {path}: {e}")
+        return False

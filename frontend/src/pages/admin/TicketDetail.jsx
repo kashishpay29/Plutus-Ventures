@@ -116,7 +116,7 @@ export default function TicketDetail() {
               Assign engineer
             </Button>
           )}
-          {ticket.status === "resolved" && !ticket.approved && (
+          {(ticket.status === "resolved" || ticket.status === "report_generated") && !ticket.approved && (
             <Button onClick={approve} disabled={approving}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-md"
                     data-testid="approve-report-btn">

@@ -24,8 +24,8 @@ export default function EngineerTickets() {
 
   const groups = {
     active: tickets.filter((t) => ["assigned", "accepted", "travelling", "reached_site", "in_progress"].includes(t.status)),
-    resolved: tickets.filter((t) => t.status === "resolved"),
-    completed: tickets.filter((t) => t.status === "completed"),
+    resolved: tickets.filter((t) => ["resolved", "completed_with_signature"].includes(t.status)),
+    completed: tickets.filter((t) => ["closed", "report_generated", "completed"].includes(t.status)),
   };
 
   return (

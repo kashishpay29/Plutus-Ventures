@@ -87,6 +87,9 @@ h1, h2, h3, h4 {
 .border-status-reached_site { border-color: #10B981; }
 .border-status-in_progress { border-color: #F97316; }
 .border-status-resolved { border-color: #14B8A6; }
+.border-status-completed_with_signature { border-color: #7C3AED; }
+.border-status-report_generated { border-color: #0891B2; }
+.border-status-closed { border-color: #16A34A; }
 .border-status-completed { border-color: #16A34A; }
 .border-status-rejected { border-color: #EF4444; }
 

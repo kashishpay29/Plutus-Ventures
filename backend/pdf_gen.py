@@ -9,6 +9,7 @@ import base64
 import logging
 from datetime import datetime
 
+import qrcode
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
@@ -97,6 +98,21 @@ def _b64_to_image(b64_str, max_w_mm=80, max_h_mm=55):
     except Exception as e:
         logger.error(f"Failed to load image for PDF: {e}")
         return None
+
+
+def _qr_image(text: str, size_mm: int = 22):
+    qr = qrcode.QRCode(version=1, box_size=10, border=1,
+                       error_correction=qrcode.constants.ERROR_CORRECT_M)
+    qr.add_data(text)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="#0A1128", back_color="#FFFFFF")
+    bio = io.BytesIO()
+    img.save(bio, format="PNG")
+    bio.seek(0)
+    rl_img = Image(bio)
+    rl_img.drawWidth = size_mm * mm
+    rl_img.drawHeight = size_mm * mm
+    return rl_img
 
 
 def build_service_report_pdf(ticket: dict, device: dict, engineer: dict,
@@ -271,6 +287,29 @@ def build_service_report_pdf(ticket: dict, device: dict, engineer: dict,
         ("LINEBELOW", (0, 0), (-1, -1), 0.2, BORDER),
     ]))
     story.append(sig_t)
+
+    # QR code + verification footer
+    try:
+        qr_payload = ticket.get("ticket_number") or ticket.get("id") or ""
+        qr = _qr_image(qr_payload, size_mm=22)
+        qr_row = Table([[
+            qr,
+            Paragraph(
+                f"<b>Verify this report</b><br/>"
+                f"<font size='8' color='#475569'>Scan the QR to verify the ticket reference."
+                f" Ticket #: <b>{qr_payload}</b><br/>"
+                f"Report ID: {(ticket.get('report_id') or '—')}</font>",
+                body),
+        ]], colWidths=[28 * mm, 152 * mm])
+        qr_row.setStyle(TableStyle([
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 8),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+        ]))
+        story.append(Spacer(1, 6))
+        story.append(qr_row)
+    except Exception as e:
+        logger.error(f"QR generation failed: {e}")
 
     doc.build(story, onFirstPage=_header_footer, onLaterPages=_header_footer)
     pdf = buf.getvalue()

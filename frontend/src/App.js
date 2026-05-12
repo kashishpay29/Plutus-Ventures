@@ -15,6 +15,9 @@ import EngineersPage from "@/pages/admin/EngineersPage";
 import DevicesPage from "@/pages/admin/DevicesPage";
 import LivePage from "@/pages/admin/LivePage";
 import AnalyticsPage from "@/pages/admin/AnalyticsPage";
+import CompaniesPage from "@/pages/admin/CompaniesPage";
+import CompanyNew from "@/pages/admin/CompanyNew";
+import CompanyDetail from "@/pages/admin/CompanyDetail";
 
 import EngineerLayout from "@/pages/engineer/EngineerLayout";
 import EngineerHome from "@/pages/engineer/EngineerHome";
@@ -66,6 +69,9 @@ function App() {
               <Route path="tickets" element={<TicketBoard />} />
               <Route path="tickets/new" element={<TicketCreate />} />
               <Route path="tickets/:id" element={<TicketDetail />} />
+              <Route path="companies" element={<CompaniesPage />} />
+              <Route path="companies/new" element={<CompanyNew />} />
+              <Route path="companies/:id" element={<CompanyDetail />} />
               <Route path="engineers" element={<EngineersPage />} />
               <Route path="devices" element={<DevicesPage />} />
               <Route path="live" element={<LivePage />} />

@@ -10,7 +10,8 @@ import { Search, PlusCircle, LayoutGrid, List as ListIcon } from "lucide-react";
 
 const COLUMNS = [
   "open", "assigned", "accepted", "travelling",
-  "reached_site", "in_progress", "resolved", "completed",
+  "reached_site", "in_progress", "resolved",
+  "completed_with_signature", "report_generated", "closed",
 ];
 
 export default function TicketBoard() {

@@ -1,0 +1,40 @@
+{
+  "summary": "Iteration 2 regression for Plutus Ventures ServiceOps (Company Management + new ticket workflow). 28/29 backend pytest pass. Companies CRUD (auto CMP-XXXX code, case-insensitive duplicate rejection, paginated list, search by q, status filter, get-with-tickets/devices, update propagates name to tickets/devices, delete-blocked when active tickets, delete OK otherwise) all PASS. Tickets: company_id required, inactive company rejected, customer fields auto-filled from company, company_name on ticket, status workflow assigned->accepted (with ticket_status_logs old/new entry) -> travelling -> reached_site -> in_progress, report submit requires signature, non-assigned engineer 403, full report -> completed_with_signature -> report_generated (PDF generated, >5KB, valid %PDF header), /api/reports/{ticket_id} returns the report, /api/files/{path}?auth=TOKEN serves PDF, legacy /api/tickets/{id}/pdf works, approve transitions to 'closed'. Admin dashboard exposes companies.active and counters for completed_with_signature/report_generated/closed. Engineer role correctly 403 on company write endpoints. Frontend: login (OTP visible in UI/dev_otp), admin sidebar has Companies nav, /admin/companies list page renders with CMP codes, search & status filter, /admin/companies/new form has all required fields and Create button, /admin/tickets/new shows COMPANY section with 'Select company *' dropdown. No JS errors observed.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/auth/login", "issue": "Documented primary admin email admin@plutusventures.com does NOT work because backend/.env sets ADMIN_EMAIL=admin@serviceops.com, which short-circuits the seed of the plutus admin. Only legacy admin@serviceops.com is seeded. Either update .env to admin@plutusventures.com or always seed both unconditionally. Login UI 'Demo credentials' text already shows admin@serviceops.com, so working creds match UI."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix env/seed mismatch: backend/.env ADMIN_EMAIL=admin@serviceops.com but credentials doc + review_request list admin@plutusventures.com as primary. Either change .env or seed both admins unconditionally so docs match reality.",
+    "Optional: rate-limit/brute-force lockout on /api/auth/login still not implemented (carried over from iteration 1)."
+  ],
+  "critical_code_review_comments": [
+    "server.py is ~1460 lines (>700) — recommend splitting into routers (companies.py, tickets.py, reports.py, dashboard.py).",
+    "Seed logic: if ADMIN_EMAIL env is set, the plutus admin is never seeded. Should seed both primary and legacy unconditionally for stable creds.",
+    "submit_report mutates ticket status to 'completed_with_signature' BEFORE PDF generation; if PDF generation throws and is caught, ticket stays in 'completed_with_signature' but next_status logic still requires pdf_path. Currently fine because exception is caught and pdf_path stays None, but the status log records 'completed_with_signature -> completed_with_signature' which is a no-op log line.",
+    "/api/files/{path:path} uses path-traversal-unsafe key; storage_client should reject '..' segments (not verified here but worth a security pass).",
+    "CORS allow_origins defaults to '*' with allow_credentials=True which browsers reject; harmless for token-in-header but should be tightened for production.",
+    "GET /api/companies has no upper bound on page_size — abusable for large reads; cap to e.g., 200."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (rewritten for iteration 2 — companies + new workflow + reports + files endpoint)"
+  ],
+  "success_rate": {"backend": "97% (28/29)", "frontend": "100% on flows tested"},
+  "test_credentials": "Working: admin@serviceops.com / admin123, engineer@plutusventures.com / engineer123, engineer@serviceops.com / engineer123. NOT working: admin@plutusventures.com / admin123 (not seeded due to ADMIN_EMAIL override in backend/.env). OTP returned in /api/auth/login.dev_otp and visible on login page.",
+  "seed_data_creation": "Tests created TEST_-prefixed companies (TEST Acme..., TEST Inactive..., TEST DelBlock..., TEST DelOK...), one full-lifecycle ticket on TEST Acme company (assigned engineer@plutusventures.com, submitted signed report -> PDF generated, then admin approve -> status=closed), and one transient extra engineer test_eng2_*@plutus.com (cleaned up).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend test file: /app/backend/tests/backend_test.py (29 tests, ~10s). Use admin@serviceops.com/admin123 — primary plutus admin is NOT seeded due to .env. PDFs land in /app/backend/storage/reports/ and are served via /api/files/{storage_path}?auth=TOKEN. The legacy /api/tickets/{id}/pdf endpoint still works. New status terminal is 'closed' (admin approve), not 'completed'. ticket_status_logs collection holds old_status/new_status/changed_by entries.",
+  "rca of the issue": "Primary admin login bug: backend/.env defines ADMIN_EMAIL=admin@serviceops.com. The seed code does `admin_email = os.environ.get('ADMIN_EMAIL', 'admin@plutusventures.com')` so the env value wins and only admin@serviceops.com is created/refreshed. The dedicated 'legacy' admin@serviceops.com seed block then no-ops because the user already exists. Net effect: admin@plutusventures.com is never inserted. Fix: either change ADMIN_EMAIL in backend/.env to admin@plutusventures.com (keeping the legacy seed block) or seed both emails unconditionally."
+}

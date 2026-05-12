@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard, Ticket, Users, Cpu, BarChart3, Map, LogOut, Bell, Menu, X
+  LayoutDashboard, Ticket, Users, Cpu, BarChart3, Map, LogOut, Bell, Menu, X,
+  Building2
 } from "lucide-react";
 import { useAuth } from "../../lib/auth";
 import { api } from "../../lib/api";
@@ -13,6 +14,7 @@ import {
 const NAV = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/admin/tickets", label: "Tickets", icon: Ticket },
+  { to: "/admin/companies", label: "Companies", icon: Building2 },
   { to: "/admin/engineers", label: "Engineers", icon: Users },
   { to: "/admin/devices", label: "Devices", icon: Cpu },
   { to: "/admin/live", label: "Live Map", icon: Map },

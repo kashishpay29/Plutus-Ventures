@@ -308,16 +308,17 @@ function ReportDrawer({ ticket, onClose, onSubmitted }) {
   });
 
   const submit = async () => {
-    if (!workNotes.trim()) return toast.error("Add work notes");
+    if (!workNotes.trim()) return toast.error("Add engineer notes");
     if (!sigRef.current || sigRef.current.isEmpty()) return toast.error("Capture customer signature");
     const sig = sigRef.current.getTrimmedCanvas().toDataURL("image/png");
     setSubmitting(true);
     try {
       await api.post(`/tickets/${ticket.id}/report`, {
-        work_notes: workNotes,
+        engineer_notes: workNotes,
+        resolution_summary: workNotes,
         parts_used: parts.filter((p) => p.name.trim()),
-        photos_before: photosBefore,
-        photos_after: photosAfter,
+        before_images: photosBefore,
+        after_images: photosAfter,
         customer_signature: sig,
         customer_signed_name: signedName,
       });
