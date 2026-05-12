@@ -33,7 +33,9 @@ def _header_footer(canvas, doc):
     width, height = A4
     company = os.environ.get("COMPANY_NAME", "Plutus Ventures")
     tagline = "Partnering Your IT Landscape"
-    logo_path = os.path.join(os.path.dirname(__file__), "assets", "plutus_logo.jpeg")
+    logo_path = os.path.join(os.path.dirname(__file__), "assets", "plutus_letterhead.jpeg")
+    if not os.path.exists(logo_path):
+        logo_path = os.path.join(os.path.dirname(__file__), "assets", "plutus_logo.jpeg")
     # Header band (white with subtle accent)
     canvas.setFillColor(HexColor("#FFFFFF"))
     canvas.rect(0, height - 32 * mm, width, 32 * mm, fill=1, stroke=0)
