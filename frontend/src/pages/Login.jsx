@@ -149,8 +149,8 @@ export default function Login() {
               <div className="mt-6 p-4 rounded-md bg-slate-50 border border-slate-200">
                 <div className="text-xs uppercase tracking-wider font-bold text-slate-600 mb-2">Demo Credentials</div>
                 <div className="text-xs text-slate-700 space-y-1 font-mono">
-                  <div>admin@serviceops.com / admin123</div>
-                  <div>engineer@serviceops.com / engineer123</div>
+                  <div>admin@plutusventures.com / admin123</div>
+                  <div>engineer@plutusventures.com / engineer123</div>
                 </div>
               </div>
             </form>
