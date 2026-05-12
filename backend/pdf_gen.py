@@ -30,24 +30,49 @@ BORDER = HexColor("#CBD5E1")
 def _header_footer(canvas, doc):
     canvas.saveState()
     width, height = A4
-    company = os.environ.get("COMPANY_NAME", "ServiceOps Pro")
-    # Header band
-    canvas.setFillColor(NAVY)
-    canvas.rect(0, height - 30 * mm, width, 30 * mm, fill=1, stroke=0)
+    company = os.environ.get("COMPANY_NAME", "Plutus Ventures")
+    tagline = "Partnering Your IT Landscape"
+    logo_path = os.path.join(os.path.dirname(__file__), "assets", "plutus_logo.jpeg")
+    # Header band (white with subtle accent)
     canvas.setFillColor(HexColor("#FFFFFF"))
+    canvas.rect(0, height - 32 * mm, width, 32 * mm, fill=1, stroke=0)
+    # Accent strip
+    canvas.setFillColor(BLUE)
+    canvas.rect(0, height - 33 * mm, width, 1 * mm, fill=1, stroke=0)
+    # Logo
+    try:
+        if os.path.exists(logo_path):
+            canvas.drawImage(logo_path, 12 * mm, height - 28 * mm,
+                              width=24 * mm, height=24 * mm,
+                              preserveAspectRatio=True, mask='auto')
+    except Exception:
+        pass
+    # Company name
+    canvas.setFillColor(NAVY)
     canvas.setFont("Helvetica-Bold", 18)
-    canvas.drawString(15 * mm, height - 15 * mm, company)
+    canvas.drawString(40 * mm, height - 14 * mm, company)
+    canvas.setFillColor(BLUE)
     canvas.setFont("Helvetica", 9)
-    canvas.drawString(15 * mm, height - 22 * mm, "IT Service Management • Field Service Report")
-    canvas.setFont("Helvetica-Bold", 9)
-    canvas.drawRightString(width - 15 * mm, height - 15 * mm, "SERVICE REPORT")
-    canvas.setFont("Helvetica", 8)
-    canvas.drawRightString(width - 15 * mm, height - 22 * mm, datetime.now().strftime("%d %b %Y"))
-    # Footer
+    canvas.drawString(40 * mm, height - 20 * mm, tagline)
     canvas.setFillColor(SLATE)
     canvas.setFont("Helvetica", 8)
-    canvas.drawString(15 * mm, 10 * mm, f"{company} • Auto-generated digital service report")
-    canvas.drawRightString(width - 15 * mm, 10 * mm, f"Page {doc.page}")
+    canvas.drawString(40 * mm, height - 25 * mm, "IT Service Management • Field Service Report")
+    # Right side meta
+    canvas.setFillColor(NAVY)
+    canvas.setFont("Helvetica-Bold", 9)
+    canvas.drawRightString(width - 15 * mm, height - 14 * mm, "SERVICE REPORT")
+    canvas.setFillColor(SLATE)
+    canvas.setFont("Helvetica", 8)
+    canvas.drawRightString(width - 15 * mm, height - 20 * mm,
+                            datetime.now().strftime("%d %b %Y"))
+    # Footer
+    canvas.setStrokeColor(BORDER)
+    canvas.setLineWidth(0.3)
+    canvas.line(15 * mm, 14 * mm, width - 15 * mm, 14 * mm)
+    canvas.setFillColor(SLATE)
+    canvas.setFont("Helvetica", 8)
+    canvas.drawString(15 * mm, 9 * mm, f"{company} • {tagline}")
+    canvas.drawRightString(width - 15 * mm, 9 * mm, f"Page {doc.page}")
     canvas.restoreState()
 
 

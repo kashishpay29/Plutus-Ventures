@@ -59,8 +59,13 @@ export default function Login() {
       {/* Left – Brand */}
       <div className="hidden lg:flex lg:col-span-3 flex-col justify-between p-12 text-white">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-white text-navy grid place-items-center font-black">S</div>
-          <div className="font-display font-black text-2xl tracking-tight">ServiceOps</div>
+          <div className="w-12 h-12 rounded-md bg-white grid place-items-center p-1.5">
+            <img src="/assets/plutus_logo.jpeg" alt="Plutus" className="w-full h-full object-contain" />
+          </div>
+          <div>
+            <div className="font-display font-black text-2xl tracking-tight">Plutus Ventures</div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-white/50">Partnering Your IT Landscape</div>
+          </div>
         </div>
         <div className="max-w-lg">
           <div className="text-xs uppercase tracking-[0.3em] text-white/60 mb-4">IT Service Management Platform</div>
@@ -85,15 +90,20 @@ export default function Login() {
           className="w-full max-w-md"
         >
           <div className="lg:hidden flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded bg-navy text-white grid place-items-center font-black">S</div>
-            <div className="font-display font-black text-xl">ServiceOps</div>
+            <div className="w-12 h-12 rounded-md bg-white border border-slate-200 p-1.5">
+              <img src="/assets/plutus_logo.jpeg" alt="Plutus" className="w-full h-full object-contain" />
+            </div>
+            <div>
+              <div className="font-display font-black text-xl text-navy">Plutus Ventures</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Partnering Your IT Landscape</div>
+            </div>
           </div>
 
           <div className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-2">
             {step === 1 ? "Step 1 of 2" : "Step 2 of 2"}
           </div>
           <h2 className="font-display font-black text-3xl tracking-tight text-navy mb-2">
-            {step === 1 ? "Sign in to ServiceOps" : "Verify your identity"}
+            {step === 1 ? "Sign in to your console" : "Verify your identity"}
           </h2>
           <p className="text-slate-500 mb-8 text-sm">
             {step === 1

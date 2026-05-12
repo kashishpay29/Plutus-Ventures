@@ -56,10 +56,12 @@ export default function AdminLayout() {
       >
         <div className="p-6 flex items-center justify-between border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded bg-white text-navy grid place-items-center font-black">S</div>
+            <div className="w-10 h-10 rounded-md bg-white grid place-items-center p-1">
+              <img src="/assets/plutus_logo.jpeg" alt="Plutus" className="w-full h-full object-contain" />
+            </div>
             <div>
-              <div className="font-display font-black tracking-tight">ServiceOps</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-white/40">Admin Console</div>
+              <div className="font-display font-black tracking-tight">Plutus Ventures</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-white/40">IT Service Console</div>
             </div>
           </div>
           <button className="lg:hidden text-white/60" onClick={() => setOpenSidebar(false)}>

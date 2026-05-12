@@ -43,9 +43,11 @@ export default function EngineerLayout() {
       {/* Top bar */}
       <header className="sticky top-0 z-30 bg-[#0A1128] text-white px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded bg-white text-navy grid place-items-center font-black">S</div>
+          <div className="w-10 h-10 rounded-md bg-white grid place-items-center p-1">
+            <img src="/assets/plutus_logo.jpeg" alt="Plutus" className="w-full h-full object-contain" />
+          </div>
           <div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-white/60">Engineer</div>
+            <div className="text-[10px] uppercase tracking-[0.18em] text-white/60">Engineer • Plutus</div>
             <div className="font-display font-bold text-sm">{user.name}</div>
           </div>
         </div>
