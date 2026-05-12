@@ -19,8 +19,12 @@ from fastapi import (
     Query
 )
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, EmailStr
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from auth import (
     hash_password, verify_password, create_access_token,
@@ -30,17 +34,62 @@ from storage_client import init_storage, put_object, get_object
 from pdf_gen import build_service_report_pdf
 
 # ---------- Setup ----------
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s | %(levelname)s | %(name)s | %(message)s'
+)
+logger = logging.getLogger("plutus-serviceops")
 
 mongo_url = os.environ["MONGO_URL"]
-client = AsyncIOMotorClient(mongo_url)
+client = AsyncIOMotorClient(
+    mongo_url,
+    maxPoolSize=int(os.environ.get("MONGO_MAX_POOL_SIZE", "50")),
+    minPoolSize=int(os.environ.get("MONGO_MIN_POOL_SIZE", "5")),
+    serverSelectionTimeoutMS=int(os.environ.get("MONGO_TIMEOUT_MS", "10000")),
+    retryWrites=True,
+)
 db = client[os.environ["DB_NAME"]]
 
-app = FastAPI(title="Plutus Ventures – IT Service Management API",
-              version="2.0.0")
+# Rate limiter
+limiter = Limiter(key_func=get_remote_address)
+
+app = FastAPI(
+    title="Plutus Ventures – IT Service Management API",
+    version="2.1.0",
+    docs_url=os.environ.get("DOCS_URL", "/api/docs"),
+    redoc_url=None,
+)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 api = APIRouter(prefix="/api")
+
+
+# ---------- Security headers + request logging ----------
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "camera=(self), geolocation=(self)"
+        # HSTS only when behind https
+        if request.url.scheme == "https":
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        return response
+
+
+class RequestLogMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        import time
+        start = time.time()
+        response = await call_next(request)
+        if request.url.path.startswith("/api/"):
+            dur = int((time.time() - start) * 1000)
+            logger.info(
+                f"{request.method} {request.url.path} "
+                f"-> {response.status_code} {dur}ms"
+            )
+        return response
 
 # ---------- Constants ----------
 # Full workflow per new requirements
@@ -403,7 +452,8 @@ async def shutdown():
 
 # ---------- AUTH ----------
 @api.post("/auth/login")
-async def login(payload: LoginRequest):
+@limiter.limit("10/minute")
+async def login(request: Request, payload: LoginRequest):
     email = payload.email.lower().strip()
     user = await db.users.find_one({"email": email})
     if not user or not verify_password(payload.password, user["password_hash"]):
@@ -429,7 +479,8 @@ async def login(payload: LoginRequest):
 
 
 @api.post("/auth/verify-otp")
-async def verify_otp(payload: OTPVerifyRequest):
+@limiter.limit("20/minute")
+async def verify_otp(request: Request, payload: OTPVerifyRequest):
     email = payload.email.lower().strip()
     challenge = await db.otp_challenges.find_one({
         "id": payload.challenge_id, "email": email, "consumed": False,
